@@ -9,19 +9,49 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    @IBOutlet weak var tableView: UITableView!
+    
+    var songs = [Song]() {
+        didSet {
+            tableView.reloadData()
+        }
+    }
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        loadData()
+        tableView.dataSource = self
         
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func loadData() {
+        songs = Song.loveSongs
     }
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let detailViewController = segue.destination as? DetailViewController, let indexPath = tableView.indexPathForSelectedRow else {
+            fatalError("Unable to access Detail View Controller")
+            
+            let song = detailViewControl
+        }
+    }
 
+}
+
+extension ViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        songs.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "songCell", for: indexPath)
+        let song = songs[indexPath.row]
+        cell.textLabel?.text = song.name
+        cell.detailTextLabel?.text = song.artist
+     return cell
+    }
 }
 
